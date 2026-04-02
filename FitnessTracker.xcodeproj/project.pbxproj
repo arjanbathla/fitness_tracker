@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2A7CC92C2F7DF87800F63223 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = FA000002BBBB000000000001 /* FirebaseAuth */; };
+		2A7CC92D2F7DF87800F63223 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = FA000002BBBB000000000002 /* FirebaseFirestore */; };
+		2A7CC92E2F7DF87800F63223 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = FA000002BBBB000000000003 /* FirebaseStorage */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		2A7CC8242F7DBB9700F63223 /* FitnessTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FitnessTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +29,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A7CC92E2F7DF87800F63223 /* FirebaseStorage in Frameworks */,
+				2A7CC92D2F7DF87800F63223 /* FirebaseFirestore in Frameworks */,
+				2A7CC92C2F7DF87800F63223 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +74,10 @@
 			);
 			name = FitnessTracker;
 			packageProductDependencies = (
+				FA000002BBBB000000000001 /* FirebaseAuth */,
+				FA000002BBBB000000000002 /* FirebaseFirestore */,
+				FA000002BBBB000000000003 /* FirebaseStorage */,
+				FA000002BBBB000000000004 /* FirebaseCore */,
 			);
 			productName = FitnessTracker;
 			productReference = 2A7CC8242F7DBB9700F63223 /* FitnessTracker.app */;
@@ -94,6 +107,9 @@
 			);
 			mainGroup = 2A7CC81B2F7DBB9700F63223;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				FA000003CCCC000000000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2A7CC8252F7DBB9700F63223 /* Products */;
 			projectDirPath = "";
@@ -328,6 +344,40 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		FA000003CCCC000000000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		FA000002BBBB000000000001 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA000003CCCC000000000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		FA000002BBBB000000000002 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA000003CCCC000000000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		FA000002BBBB000000000003 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA000003CCCC000000000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+		FA000002BBBB000000000004 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA000003CCCC000000000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2A7CC81C2F7DBB9700F63223 /* Project object */;
 }
