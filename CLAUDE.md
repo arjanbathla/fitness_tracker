@@ -112,7 +112,28 @@ xcodebuild -scheme FitnessTracker -destination 'platform=iOS Simulator,name=iPho
 - Profile onboarding is a multi-step wizard with progress bar (basic info → fitness goal → summary)
 - Weekly workout plan displays as horizontally scrollable day pills (Mon–Fri) with colour coding
 
+## Lab Guides (MUST FOLLOW)
+The `docs/lab-guides/` folder contains course lab sheets that define HOW specific features must be implemented. When building features that overlap with these guides, Claude Code MUST read the relevant lab guide first and follow its patterns, code structure, and approach. These are coursework requirements, not suggestions.
+
+| Lab Guide | File | Use When |
+|-----------|------|----------|
+| Firebase Auth | `docs/lab-guides/firebase-auth.md` | Building login, sign-up, password reset, auth state management |
+| Firebase Firestore | `docs/lab-guides/firebase-firestore.md` | Storing/fetching any data (users, meals, exercises, workout plans, daily stats) |
+| Google Maps | `docs/lab-guides/google-maps.md` | Building the "Nearest Gym" map feature with pins and directions |
+| Accelerometer | `docs/lab-guides/accelerometer.md` | Implementing motion tracking (step counting, activity detection) |
+| Camera | `docs/lab-guides/camera.md` | Any camera functionality (if added later) |
+
+Key patterns from lab guides to follow:
+- Use `ObservableObject` with `@Published` properties for services (as shown in Firestore lab)
+- Use `FirestoreService` class pattern for database access (not direct Firestore calls in Views)
+- Firebase SDK added via SPM from `https://github.com/firebase/firebase-ios-sdk`
+- Google Maps SDK added via SPM from `https://github.com/googlemaps/google-maps-ios-utils`
+- Configure Firebase in the main App struct with `FirebaseApp.configure()` in init()
+- CoreMotion accelerometer uses `CMMotionManager` with a timer-based update interval
+- Camera uses UIKit's `UIImagePickerController` wrapped in a `UIViewControllerRepresentable`
+
 ## Reference Docs
 - Full PRD: `docs/prd.md`
 - Screen mockups: `docs/screens/` (33 labelled PNGs)
+- Lab implementation guides: `docs/lab-guides/` (5 course lab sheets — MUST follow these patterns)
 - Original spec: `docs/mobile_report.docx`
