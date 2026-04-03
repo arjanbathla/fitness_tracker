@@ -45,8 +45,6 @@ struct HomeView: View {
         }
     }
 
-    // MARK: - Weekly Schedule
-
     private var weeklyScheduleCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Weekly schedule - Today")
@@ -80,8 +78,6 @@ struct HomeView: View {
         .background(Color(white: 0.11))
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
-
-    // MARK: - Calories
 
     private var caloriesCard: some View {
         let consumed = viewModel.caloriesConsumed
@@ -134,8 +130,6 @@ struct HomeView: View {
         .background(Color(white: 0.11))
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
-
-    // MARK: - Steps
 
     private var stepsCard: some View {
         let steps = stepCounter.steps
