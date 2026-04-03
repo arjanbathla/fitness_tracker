@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import FirebaseFirestore
 
 class FirestoreService: ObservableObject {
@@ -11,36 +12,28 @@ class FirestoreService: ObservableObject {
 
     private var db = Firestore.firestore()
 
-    // MARK: - Users
-
-    func fetchUsers() {
+    func getUsers() {
         db.collection("users").getDocuments { (snapshot, error) in
             if let error = error {
-                print("Error getting documents: \(error.localizedDescription)")
+                print("error getting users: \(error)")
                 return
             }
+            guard let documents = snapshot?.documents else { return }
 
-            guard let documents = snapshot?.documents else {
-                print("No documents found in 'users' collection.")
-                return
+            self.users = documents.compactMap { doc -> User? in
+                try? doc.data(as: User.self)
             }
-
-            self.users = documents.compactMap { docSnapshot -> User? in
-                try? docSnapshot.data(as: User.self)
-            }
-
-            print("Fetched users: \(self.users)")
+            print("got \(self.users.count) users")
         }
     }
 
-    func fetchUser(userId: String, completion: @escaping (User?) -> Void) {
+    func getUser(userId: String, completion: @escaping (User?) -> Void) {
         db.collection("users").document(userId).getDocument { (document, error) in
             if let error = error {
-                print("Error getting user: \(error.localizedDescription)")
+                print("error getting user: \(error)")
                 completion(nil)
                 return
             }
-
             let user = try? document?.data(as: User.self)
             completion(user)
         }
@@ -55,47 +48,33 @@ class FirestoreService: ObservableObject {
         }
     }
 
-    // MARK: - Exercises
-
-    func fetchExercises() {
+    func loadExercises() {
         db.collection("exercises").getDocuments { (snapshot, error) in
             if let error = error {
-                print("Error getting documents: \(error.localizedDescription)")
+                print("error loading exercises: \(error)")
                 return
             }
+            guard let documents = snapshot?.documents else { return }
 
-            guard let documents = snapshot?.documents else {
-                print("No documents found in 'exercises' collection.")
-                return
+            self.exercises = documents.compactMap { doc -> Exercise? in
+                try? doc.data(as: Exercise.self)
             }
-
-            self.exercises = documents.compactMap { docSnapshot -> Exercise? in
-                try? docSnapshot.data(as: Exercise.self)
-            }
-
-            print("Fetched exercises: \(self.exercises)")
+            print("got \(self.exercises.count) exercises")
         }
     }
 
-    // MARK: - Meals
-
-    func fetchMeals(userId: String) {
+    func getMeals(userId: String) {
         db.collection("meals").whereField("userId", isEqualTo: userId).getDocuments { (snapshot, error) in
             if let error = error {
-                print("Error getting documents: \(error.localizedDescription)")
+                print("error getting meals: \(error)")
                 return
             }
+            guard let documents = snapshot?.documents else { return }
 
-            guard let documents = snapshot?.documents else {
-                print("No documents found in 'meals' collection.")
-                return
+            self.meals = documents.compactMap { doc -> Meal? in
+                try? doc.data(as: Meal.self)
             }
-
-            self.meals = documents.compactMap { docSnapshot -> Meal? in
-                try? docSnapshot.data(as: Meal.self)
-            }
-
-            print("Fetched meals: \(self.meals)")
+            print("got \(self.meals.count) meals")
         }
     }
 
@@ -108,69 +87,66 @@ class FirestoreService: ObservableObject {
         }
     }
 
-    // MARK: - Workout Plans
+    func saveWorkoutPlan(_ plan: WorkoutPlan, userId: String, completion: @escaping (String?) -> Void) {
+        do {
+            try db.collection("workoutPlans").document(userId).setData(from: plan)
+            completion(nil)
+        } catch {
+            completion(error.localizedDescription)
+        }
+    }
 
-    func fetchWorkoutPlans(userId: String) {
+    func getWorkoutPlans(userId: String) {
         db.collection("workoutPlans").whereField("userId", isEqualTo: userId).getDocuments { (snapshot, error) in
             if let error = error {
-                print("Error getting documents: \(error.localizedDescription)")
+                print("error getting workout plans: \(error)")
                 return
             }
+            guard let documents = snapshot?.documents else { return }
 
-            guard let documents = snapshot?.documents else {
-                print("No documents found in 'workoutPlans' collection.")
-                return
+            self.workoutPlans = documents.compactMap { doc -> WorkoutPlan? in
+                try? doc.data(as: WorkoutPlan.self)
             }
-
-            self.workoutPlans = documents.compactMap { docSnapshot -> WorkoutPlan? in
-                try? docSnapshot.data(as: WorkoutPlan.self)
-            }
-
-            print("Fetched workout plans: \(self.workoutPlans)")
         }
     }
 
-    // MARK: - Workout Sessions
+    func getWorkoutPlan(userId: String, completion: @escaping (WorkoutPlan?) -> Void) {
+        db.collection("workoutPlans").document(userId).getDocument { (document, error) in
+            if let error = error {
+                print("error getting workout plan: \(error)")
+                completion(nil)
+                return
+            }
+            let plan = try? document?.data(as: WorkoutPlan.self)
+            completion(plan)
+        }
+    }
 
-    func fetchWorkoutSessions(userId: String) {
+    func getWorkoutSessions(userId: String) {
         db.collection("workoutSessions").whereField("userId", isEqualTo: userId).getDocuments { (snapshot, error) in
             if let error = error {
-                print("Error getting documents: \(error.localizedDescription)")
+                print("error getting sessions: \(error)")
                 return
             }
+            guard let documents = snapshot?.documents else { return }
 
-            guard let documents = snapshot?.documents else {
-                print("No documents found in 'workoutSessions' collection.")
-                return
+            self.workoutSessions = documents.compactMap { doc -> WorkoutSession? in
+                try? doc.data(as: WorkoutSession.self)
             }
-
-            self.workoutSessions = documents.compactMap { docSnapshot -> WorkoutSession? in
-                try? docSnapshot.data(as: WorkoutSession.self)
-            }
-
-            print("Fetched workout sessions: \(self.workoutSessions)")
         }
     }
 
-    // MARK: - Daily Stats
-
-    func fetchDailyStats(userId: String) {
+    func getDailyStats(userId: String) {
         db.collection("dailyStats").whereField("userId", isEqualTo: userId).getDocuments { (snapshot, error) in
             if let error = error {
-                print("Error getting documents: \(error.localizedDescription)")
+                print("error getting stats: \(error)")
                 return
             }
+            guard let documents = snapshot?.documents else { return }
 
-            guard let documents = snapshot?.documents else {
-                print("No documents found in 'dailyStats' collection.")
-                return
+            self.dailyStats = documents.compactMap { doc -> DailyStats? in
+                try? doc.data(as: DailyStats.self)
             }
-
-            self.dailyStats = documents.compactMap { docSnapshot -> DailyStats? in
-                try? docSnapshot.data(as: DailyStats.self)
-            }
-
-            print("Fetched daily stats: \(self.dailyStats)")
         }
     }
 }
