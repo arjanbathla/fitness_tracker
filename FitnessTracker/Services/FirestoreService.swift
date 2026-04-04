@@ -258,4 +258,44 @@ class FirestoreService: ObservableObject {
             }
         }
     }
+
+    func getTodaysMeals(userId: String, completion: @escaping ([Meal]) -> Void) {
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: Date())
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+
+        db.collection("meals")
+            .whereField("userId", isEqualTo: userId)
+            .whereField("date", isGreaterThanOrEqualTo: startOfDay)
+            .whereField("date", isLessThan: endOfDay)
+            .getDocuments { (snapshot, error) in
+                if let error = error {
+                    print("error getting meals: \(error)")
+                    completion([])
+                    return
+                }
+                guard let documents = snapshot?.documents else {
+                    completion([])
+                    return
+                }
+
+                let meals = documents.compactMap { doc -> Meal? in
+                    try? doc.data(as: Meal.self)
+                }
+                print("got \(meals.count) meals for today")
+                completion(meals)
+            }
+    }
+
+    func deleteMeal(mealId: String, completion: @escaping (String?) -> Void) {
+        db.collection("meals").document(mealId).delete { error in
+            if let error = error {
+                print("error deleting meal: \(error)")
+                completion(error.localizedDescription)
+            } else {
+                print("meal deleted")
+                completion(nil)
+            }
+        }
+    }
 }
