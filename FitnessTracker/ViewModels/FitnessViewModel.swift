@@ -58,9 +58,10 @@ class FitnessViewModel: ObservableObject {
             }
         }
 
-        firestoreService.loadExercises()
-        // exercises are published on firestoreService.exercises
-        // we need to copy them over when they load
+        // seed exercises if none exist, then load them
+        firestoreService.seedExercises { [weak self] in
+            self?.firestoreService.loadExercises()
+        }
         firestoreService.$exercises
             .receive(on: DispatchQueue.main)
             .assign(to: &$exercises)
