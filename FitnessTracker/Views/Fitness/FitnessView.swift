@@ -150,9 +150,7 @@ struct FitnessView: View {
     }
 
     private var nearbyGymsButton: some View {
-        Button {
-            // placeholder - nearby gyms not yet implemented
-        } label: {
+        NavigationLink(destination: NearbyGymsView()) {
             Text("View nearby gyms")
                 .font(.headline)
                 .foregroundStyle(.white)
