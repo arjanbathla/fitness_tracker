@@ -41,7 +41,7 @@ struct ExerciseDetailView: View {
                 }
 
                 Text(exercise.description)
-                    .font(.body)
+                    .font(.body.italic())
                     .foregroundStyle(.white)
                     .padding(.horizontal, 4)
             }
