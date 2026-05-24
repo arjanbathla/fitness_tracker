@@ -6,7 +6,7 @@ class StepCounterService: ObservableObject {
     private var pedometer = CMPedometer()
 
     @Published var steps: Int = 0
-    @Published var distance: Double = 0.0 // in km
+    @Published var distance: Double = 0.0 // km not miles
 
     func startCounting() {
         // check if step counting is available

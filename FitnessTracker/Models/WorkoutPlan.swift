@@ -1,19 +1,28 @@
 import Foundation
+import FirebaseFirestore
 
 struct WorkoutPlan: Identifiable, Codable {
-    var id: String
+    @DocumentID var id: String?
     var userId: String
     var days: [DayPlan]
+}
+
+struct PlannedExercise: Identifiable, Codable {
+    var id = UUID().uuidString
+    var name: String
+    var sets: Int
+    var reps: String
 }
 
 struct DayPlan: Identifiable, Codable {
     var id: String { dayOfWeek.rawValue }
     var dayOfWeek: DayOfWeek
     var workoutName: String
-    var exerciseIds: [String]
+    var exerciseIds: [String] // refs to exercise docs
     var setsPerExercise: Int
     var repsPerExercise: Int
     var isCompleted: Bool
+    var exercises: [PlannedExercise]?
 
     enum DayOfWeek: String, Codable, CaseIterable {
         case monday = "Monday"

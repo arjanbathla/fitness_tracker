@@ -1,6 +1,8 @@
 import SwiftUI
 
+// main tab bar - home, fitness, meals, settings
 struct ContentView: View {
+    @EnvironmentObject var authViewModel: LoginViewModel
     @State private var selectedTab: Tab = .home
 
     var body: some View {
@@ -13,15 +15,15 @@ struct ContentView: View {
                     .tag(tab)
             }
         }
-        .tint(Color(red: 1, green: 0.84, blue: 0)) // #FFD700
+        .tint(Color(red: 1, green: 0.84, blue: 0)) // yellow from the design
     }
 }
 
+// each tab with its icon and view
 enum Tab: String, CaseIterable, Identifiable {
     case home
     case fitness
     case addMeal
-    case analytics
     case settings
 
     var id: String { rawValue }
@@ -31,7 +33,6 @@ enum Tab: String, CaseIterable, Identifiable {
         case .home: "Home"
         case .fitness: "Fitness"
         case .addMeal: "Add Meal"
-        case .analytics: "Analytics"
         case .settings: "Settings"
         }
     }
@@ -41,7 +42,6 @@ enum Tab: String, CaseIterable, Identifiable {
         case .home: "house.fill"
         case .fitness: "figure.run"
         case .addMeal: "plus.circle.fill"
-        case .analytics: "chart.bar.fill"
         case .settings: "gearshape.fill"
         }
     }
@@ -52,7 +52,6 @@ enum Tab: String, CaseIterable, Identifiable {
         case .home: HomeView()
         case .fitness: FitnessView()
         case .addMeal: MealTrackerView()
-        case .analytics: AnalyticsView()
         case .settings: SettingsView()
         }
     }
@@ -60,4 +59,5 @@ enum Tab: String, CaseIterable, Identifiable {
 
 #Preview {
     ContentView()
+        .environmentObject(LoginViewModel())
 }

@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import CoreLocation
 
+// for the nearby gyms feature
 class LocationService: NSObject, CLLocationManagerDelegate, ObservableObject {
     private var locationManager: CLLocationManager
     @Published var currentLocation: CLLocation?

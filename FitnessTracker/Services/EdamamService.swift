@@ -12,6 +12,7 @@ struct EdamamFood {
 class EdamamService: ObservableObject {
     @Published var searchResults: [EdamamFood] = []
 
+    // calls the edamam nutrition api
     func searchFood(query: String, completion: @escaping ([EdamamFood]) -> Void) {
         guard !query.isEmpty else {
             completion([])
@@ -47,7 +48,7 @@ class EdamamService: ObservableObject {
                 }
 
                 var foods: [EdamamFood] = []
-                for hint in hints.prefix(10) {
+                for hint in hints.prefix(10) { // only show first 10
                     guard let food = hint["food"] as? [String: Any],
                           let label = food["label"] as? String,
                           let nutrients = food["nutrients"] as? [String: Any] else {

@@ -1,7 +1,8 @@
 import Foundation
+import FirebaseFirestore
 
 struct DailyStats: Identifiable, Codable {
-    var id: String
+    @DocumentID var id: String?
     var userId: String
     var date: Date
     var steps: Int
@@ -14,7 +15,6 @@ struct DailyStats: Identifiable, Codable {
     var fatsTotal: Double
 
     static let empty = DailyStats(
-        id: "",
         userId: "",
         date: .now,
         steps: 0,

@@ -16,6 +16,7 @@ class MealTrackerViewModel: ObservableObject {
     var firestoreService = FirestoreService()
     var edamamService = EdamamService()
 
+    // split meals by type for the sections
     var breakfastMeals: [Meal] { meals.filter { $0.mealType == .breakfast } }
     var lunchMeals: [Meal] { meals.filter { $0.mealType == .lunch } }
     var dinnerMeals: [Meal] { meals.filter { $0.mealType == .dinner } }
@@ -59,6 +60,7 @@ class MealTrackerViewModel: ObservableObject {
         }
     }
 
+    // multiply everything by quantity
     func addMeal(food: EdamamFood, quantity: Int, mealType: Meal.MealType) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
 
@@ -101,6 +103,7 @@ class MealTrackerViewModel: ObservableObject {
         }
     }
 
+    //disappears after 2 secs
     func showToast(_ message: String) {
         toastMessage = message
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in

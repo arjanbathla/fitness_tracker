@@ -2,6 +2,7 @@ import SwiftUI
 import Combine
 import FirebaseAuth
 
+// workout plan + exercise list
 class FitnessViewModel: ObservableObject {
     @Published var workoutPlan: WorkoutPlan?
     @Published var exercises: [Exercise] = []
@@ -14,8 +15,8 @@ class FitnessViewModel: ObservableObject {
 
     var firestoreService = FirestoreService()
 
-    let dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri"]
-    let dayKeys: [DayPlan.DayOfWeek] = [.monday, .tuesday, .wednesday, .thursday, .friday]
+    let dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    let dayKeys: [DayPlan.DayOfWeek] = [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
 
     var selectedDayPlan: DayPlan? {
         guard let plan = workoutPlan else { return nil }
@@ -23,24 +24,17 @@ class FitnessViewModel: ObservableObject {
         return plan.days.first { $0.dayOfWeek == key }
     }
 
-    var dayExercises: [Exercise] {
+    var plannedExercises: [PlannedExercise] {
         guard let dayPlan = selectedDayPlan else { return [] }
-        if dayPlan.exerciseIds.isEmpty {
-            // if no specific exercise ids, filter by muscle group matching workout name
-            return exercises.filter { exercise in
-                exercise.muscleGroup.rawValue.lowercased().contains(dayPlan.workoutName.lowercased())
-            }
-        }
-        return exercises.filter { exercise in
-            dayPlan.exerciseIds.contains(exercise.id ?? "")
+        let items = dayPlan.exercises ?? []
+        if searchText.isEmpty { return items }
+        return items.filter {
+            $0.name.localizedCaseInsensitiveContains(searchText)
         }
     }
 
-    var filteredDayExercises: [Exercise] {
-        if searchText.isEmpty { return dayExercises }
-        return dayExercises.filter {
-            $0.name.localizedCaseInsensitiveContains(searchText)
-        }
+    func getExercise(named name: String) -> Exercise? {
+        exercises.first { $0.name.lowercased() == name.lowercased() }
     }
 
     func loadData() {
@@ -67,21 +61,27 @@ class FitnessViewModel: ObservableObject {
             .assign(to: &$exercises)
     }
 
+    // toggles completion on/off
     func markCompleted() {
         guard let uid = Auth.auth().currentUser?.uid,
               var plan = workoutPlan else { return }
 
         let key = dayKeys[selectedDayIndex]
         if let idx = plan.days.firstIndex(where: { $0.dayOfWeek == key }) {
-            plan.days[idx].isCompleted = true
+            plan.days[idx].isCompleted.toggle()
             workoutPlan = plan
 
+            let completed = plan.days[idx].isCompleted
             firestoreService.saveWorkoutPlan(plan, userId: uid) { [weak self] error in
                 DispatchQueue.main.async {
                     if let error = error {
                         print("save failed: \(error)")
                     } else {
-                        self?.showToast("Workout added")
+                        if completed {
+                            self?.showToast("Workout completed")
+                        } else {
+                            self?.showToast("Workout unmarked")
+                        }
                     }
                 }
             }

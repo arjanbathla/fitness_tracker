@@ -1,13 +1,14 @@
 import Foundation
+import FirebaseFirestore
 
 struct Exercise: Identifiable, Codable {
-    var id: String
+    @DocumentID var id: String?
     var name: String
     var muscleGroup: MuscleGroup
     var equipment: String
     var difficulty: Difficulty
     var description: String
-    var videoURL: String
+    var videoURL: String // firebase storage link
 
     enum MuscleGroup: String, Codable, CaseIterable {
         case legs = "Legs"

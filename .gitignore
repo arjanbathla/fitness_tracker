@@ -1,0 +1,64 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Xcode build files
+build/
+DerivedData/
+*.ipa
+*.dSYM
+*.dSYM.zip
+
+# Xcode user settings
+*.xcuserstate
+*.xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# Xcode source control metadata
+*.xccheckout
+*.xcscmblueprint
+
+# Swift Package Manager build files
+.build/
+.swiftpm/
+
+# CocoaPods, only needed if you ever use Pods
+Pods/
+
+# Carthage, only needed if you ever use Carthage
+Carthage/Build/
+
+# Firebase and API keys
+GoogleService-Info.plist
+.env
+.env.local
+.env.development
+.env.production
+Secrets.plist
+Config.plist
+APIKeys.plist
+
+# Local config files
+*.local
+*.private
+
+# Archives and backups
+*.zip
+*.tar.gz
+*.bak
+*.backup
+
+# Logs
+*.log
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# Fastlane screenshots/reports, only if you use Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output/

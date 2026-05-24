@@ -10,6 +10,7 @@ class FirestoreService: ObservableObject {
     @Published var workoutSessions: [WorkoutSession] = []
     @Published var dailyStats: [DailyStats] = []
 
+    // db reference
     private var db = Firestore.firestore()
 
     func getUsers() {
@@ -27,6 +28,7 @@ class FirestoreService: ObservableObject {
         }
     }
 
+    // grab single user by id
     func getUser(userId: String, completion: @escaping (User?) -> Void) {
         db.collection("users").document(userId).getDocument { (document, error) in
             if let error = error {
@@ -78,6 +80,8 @@ class FirestoreService: ObservableObject {
         }
     }
 
+    //save meal to firestore
+    //save meal to firestore
     func saveMeal(_ meal: Meal, completion: @escaping (String?) -> Void) {
         do {
             _ = try db.collection("meals").addDocument(from: meal)
@@ -87,6 +91,7 @@ class FirestoreService: ObservableObject {
         }
     }
 
+    // one plan per user, keyed by uid
     func saveWorkoutPlan(_ plan: WorkoutPlan, userId: String, completion: @escaping (String?) -> Void) {
         do {
             try db.collection("workoutPlans").document(userId).setData(from: plan)
@@ -150,6 +155,7 @@ class FirestoreService: ObservableObject {
         }
     }
 
+    // populates default exercises if collection is empty
     func seedExercises(completion: @escaping () -> Void) {
         db.collection("exercises").getDocuments { [weak self] snapshot, error in
             guard let self = self else { return }
@@ -166,7 +172,7 @@ class FirestoreService: ObservableObject {
                     "equipment": "Barbell",
                     "difficulty": "beginner",
                     "description": "Stand with feet shoulder-width apart, barbell on your upper back. Bend your knees and lower your hips until thighs are parallel to the floor, then push back up through your heels.",
-                    "videoURL": "https://via.placeholder.com/400x220.png?text=Squats"
+                    "videoURL": ""
                 ],
                 [
                     "name": "Deadlifts",
@@ -174,7 +180,7 @@ class FirestoreService: ObservableObject {
                     "equipment": "Barbell",
                     "difficulty": "intermediate",
                     "description": "Stand with feet hip-width apart, barbell over mid-foot. Hinge at the hips, grip the bar, and lift by driving your hips forward while keeping your back straight.",
-                    "videoURL": "https://via.placeholder.com/400x220.png?text=Deadlifts"
+                    "videoURL": ""
                 ],
                 [
                     "name": "Calf Raises",
@@ -182,7 +188,7 @@ class FirestoreService: ObservableObject {
                     "equipment": "Bodyweight",
                     "difficulty": "beginner",
                     "description": "Stand on the edge of a step with heels hanging off. Rise up onto your toes as high as possible, pause, then slowly lower back down below the step level.",
-                    "videoURL": "https://via.placeholder.com/400x220.png?text=Calf+Raises"
+                    "videoURL": ""
                 ],
                 [
                     "name": "Bench Press",
@@ -190,7 +196,7 @@ class FirestoreService: ObservableObject {
                     "equipment": "Barbell",
                     "difficulty": "intermediate",
                     "description": "Lie on a flat bench, grip the barbell slightly wider than shoulder-width. Lower the bar to your chest, then press it back up to full arm extension.",
-                    "videoURL": "https://via.placeholder.com/400x220.png?text=Bench+Press"
+                    "videoURL": ""
                 ],
                 [
                     "name": "Pec Flies",
@@ -198,7 +204,7 @@ class FirestoreService: ObservableObject {
                     "equipment": "Dumbbells",
                     "difficulty": "beginner",
                     "description": "Lie on a flat bench holding dumbbells above your chest with arms slightly bent. Open your arms wide in an arc until you feel a stretch, then squeeze them back together.",
-                    "videoURL": "https://via.placeholder.com/400x220.png?text=Pec+Flies"
+                    "videoURL": ""
                 ],
                 [
                     "name": "Push-ups",
@@ -206,7 +212,7 @@ class FirestoreService: ObservableObject {
                     "equipment": "Bodyweight",
                     "difficulty": "beginner",
                     "description": "Start in a plank position with hands shoulder-width apart. Lower your chest to the ground by bending your elbows, then push back up to the starting position.",
-                    "videoURL": "https://via.placeholder.com/400x220.png?text=Push-ups"
+                    "videoURL": ""
                 ],
                 [
                     "name": "Lateral Raises",
@@ -214,7 +220,7 @@ class FirestoreService: ObservableObject {
                     "equipment": "Dumbbells",
                     "difficulty": "beginner",
                     "description": "Stand with dumbbells at your sides, palms facing in. Raise your arms out to the sides until they reach shoulder height, then slowly lower them back down.",
-                    "videoURL": "https://via.placeholder.com/400x220.png?text=Lateral+Raises"
+                    "videoURL": ""
                 ],
                 [
                     "name": "Lat Pulldown",
@@ -222,7 +228,7 @@ class FirestoreService: ObservableObject {
                     "equipment": "Cable Machine",
                     "difficulty": "beginner",
                     "description": "Sit at the lat pulldown machine and grip the bar wider than shoulder-width. Pull the bar down to your upper chest while squeezing your shoulder blades together, then slowly release.",
-                    "videoURL": "https://via.placeholder.com/400x220.png?text=Lat+Pulldown"
+                    "videoURL": ""
                 ],
                 [
                     "name": "Bicep Curls",
@@ -230,7 +236,7 @@ class FirestoreService: ObservableObject {
                     "equipment": "Dumbbells",
                     "difficulty": "beginner",
                     "description": "Stand holding dumbbells at your sides with palms facing forward. Curl the weights up towards your shoulders by bending at the elbow, then lower slowly.",
-                    "videoURL": "https://via.placeholder.com/400x220.png?text=Bicep+Curls"
+                    "videoURL": ""
                 ],
                 [
                     "name": "Tricep Dips",
@@ -238,10 +244,11 @@ class FirestoreService: ObservableObject {
                     "equipment": "Parallel Bars",
                     "difficulty": "intermediate",
                     "description": "Grip parallel bars and lift yourself up with arms straight. Lower your body by bending your elbows to about 90 degrees, then press back up to the starting position.",
-                    "videoURL": "https://via.placeholder.com/400x220.png?text=Tricep+Dips"
+                    "videoURL": ""
                 ]
             ]
 
+            // batch write is faster than individual adds
             let batch = self.db.batch()
             for exercise in exercises {
                 let ref = self.db.collection("exercises").document()
@@ -259,15 +266,10 @@ class FirestoreService: ObservableObject {
         }
     }
 
+    // get all meals for user then filter to today only
     func getTodaysMeals(userId: String, completion: @escaping ([Meal]) -> Void) {
-        let calendar = Calendar.current
-        let startOfDay = calendar.startOfDay(for: Date())
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
-
         db.collection("meals")
             .whereField("userId", isEqualTo: userId)
-            .whereField("date", isGreaterThanOrEqualTo: startOfDay)
-            .whereField("date", isLessThan: endOfDay)
             .getDocuments { (snapshot, error) in
                 if let error = error {
                     print("error getting meals: \(error)")
@@ -279,11 +281,15 @@ class FirestoreService: ObservableObject {
                     return
                 }
 
-                let meals = documents.compactMap { doc -> Meal? in
+                let allMeals = documents.compactMap { doc -> Meal? in
                     try? doc.data(as: Meal.self)
                 }
-                print("got \(meals.count) meals for today")
-                completion(meals)
+
+                // filter to today client-side
+                let calendar = Calendar.current
+                let todaysMeals = allMeals.filter { calendar.isDateInToday($0.date) }
+                print("got \(todaysMeals.count) meals for today")
+                completion(todaysMeals)
             }
     }
 
@@ -296,6 +302,52 @@ class FirestoreService: ObservableObject {
                 print("meal deleted")
                 completion(nil)
             }
+        }
+    }
+
+
+    func deleteAllUserData(userId: String, completion: @escaping () -> Void) {
+        // delete user document
+        db.collection("users").document(userId).delete { error in
+            if let error = error {
+                print("error deleting user doc: \(error)")
+            }
+        }
+
+        // delete workout plan
+        db.collection("workoutPlans").document(userId).delete { error in
+            if let error = error {
+                print("error deleting workout plan: \(error)")
+            }
+        }
+
+        // delete all meals for this user
+        db.collection("meals").whereField("userId", isEqualTo: userId).getDocuments { snapshot, error in
+            if let docs = snapshot?.documents {
+                for doc in docs {
+                    doc.reference.delete()
+                }
+                print("deleted \(docs.count) meals")
+            }
+        }
+
+        // delete workout sessions
+        db.collection("workoutSessions").whereField("userId", isEqualTo: userId).getDocuments { snapshot, error in
+            if let docs = snapshot?.documents {
+                for doc in docs {
+                    doc.reference.delete()
+                }
+            }
+        }
+
+        // delete daily stats
+        db.collection("dailyStats").whereField("userId", isEqualTo: userId).getDocuments { snapshot, error in
+            if let docs = snapshot?.documents {
+                for doc in docs {
+                    doc.reference.delete()
+                }
+            }
+            completion()
         }
     }
 }

@@ -2,7 +2,7 @@ import Foundation
 import FirebaseFirestore
 
 struct User: Identifiable, Codable {
-    @DocumentID var id: String?
+    @DocumentID var id: String? // firestore doc id
     var fullName: String
     var email: String
     var gender: Gender
@@ -13,6 +13,7 @@ struct User: Identifiable, Codable {
     var stepGoal: Int
     var distanceUnit: DistanceUnit
     var createdAt: Date
+    // macro targets in grams
     var proteinGoal: Int
     var carbsGoal: Int
     var fatsGoal: Int
@@ -54,6 +55,7 @@ struct User: Identifiable, Codable {
         self.stepGoal = stepGoal
         self.distanceUnit = distanceUnit
         self.createdAt = createdAt
+        // fallback macro split if not set
         self.proteinGoal = proteinGoal ?? (recommendedCalories * 30 / 100 / 4)
         self.carbsGoal = carbsGoal ?? (recommendedCalories * 40 / 100 / 4)
         self.fatsGoal = fatsGoal ?? (recommendedCalories * 30 / 100 / 9)
@@ -77,6 +79,7 @@ struct User: Identifiable, Codable {
         fatsGoal = (try? container.decode(Int.self, forKey: .fatsGoal)) ?? (recommendedCalories * 30 / 100 / 9)
     }
 
+    //placeholder user
     static let `default` = User(
         fullName: "",
         email: "",
